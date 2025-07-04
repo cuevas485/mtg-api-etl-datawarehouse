@@ -1,13 +1,37 @@
-# Magic: The Gathering Price Fact Table
+# Magic: The Gathering Star Schema Warehouse (via Scryfall API)
 
-This repository documents the structure and purpose of the **`price_fact_df`**, a fact table within a dimensional model designed to track daily price changes of Magic: The Gathering cards using the [Scryfall API](https://scryfall.com/docs/api).
+This project extracts data from the [Scryfall API](https://scryfall.com/docs/api), transforms it into a clean and analyzable format, and stores it using a dimensional model (star schema). It supports daily refresh of card prices and historical tracking while enabling insights into card metadata, keywords, color identity, legalities, and more.
 
 ---
 
-## Table Structure
+## Star Schema Design
+
+- `card_fact` – Primary fact table (1 row per card), with attributes like name, power, toughness, etc.
+- `price_fact` – Time-series fact table for daily prices (1 row per card per day)
+- `dim_rarity` – Card rarity dimension
+- `dim_set` – Set metadata
+- `dim_type` – Supertypes, types, and subtypes (e.g., “Creature — Elf”)
+- `dim_color` – Exploded color identity (1 row per card-color)
+- `dim_keywords` – Exploded keyword abilities (e.g., "Flying")
+- `dim_legalities` – Format legality flags by game mode
+
+---
+
+## ETL Workflow Summary
+
+1. **Extract** – Full card data is downloaded from Scryfall’s bulk endpoint.
+2. **Transform** – Normalize, explode, and map data into fact/dim tables.
+3. **Load** – Save all data into separate CSVs, with price snapshots daily.
+
+---
+
+## Price Fact Table
+
+The `price_fact_df` tracks market prices for each Magic: The Gathering card on a daily basis.
 
 | Column               | Description |
 |----------------------|-------------|
+| `price_fact_id`      | Primary key for the table |
 | `id`                 | Unique card identifier (FK to `card_fact`) |
 | `date_loaded`        | Date the price was recorded (supports time-series tracking) |
 | `prices.usd`         | Market price in USD |
@@ -17,15 +41,15 @@ This repository documents the structure and purpose of the **`price_fact_df`**, 
 | `prices.eur_foil`    | Foil version price in EUR |
 | `prices.tix`         | Magic: The Gathering Online (MTGO) price |
 
-> ⚠️ Missing values (e.g., for non-foil cards) are recorded as `None`.
+> ⚠Missing values (e.g., for non-foil cards) are recorded as `None`.
 
 ---
 
-## Data Refresh Strategy
+## How to Run
 
-- Prices are fetched daily using the Scryfall API.
-- Each load appends a new row for every card, capturing a snapshot of current market prices.
-- The grain of the table is **one row per card per day**, allowing for historical trend analysis.
+1. Clone this repository
+2. Install required Python packages (`pandas`, `requests`)
+3. Run the Jupyter notebook or `.py` script
 
 ---
 
@@ -40,17 +64,11 @@ This repository documents the structure and purpose of the **`price_fact_df`**, 
 
 ## Future Enhancements
 
-- Integrate with tools like dbt or Airflow for automated daily loads
+- Automate daily runs using dbt or Airflow
+- Store data in a relational database (e.g., PostgreSQL, BigQuery)
+- Create visual dashboards (Tableau, Power BI)
+- Add `dim_purchase_url` for TCGPlayer/Cardmarket links
 
 ---
 
-## Related Tables
-
-- `card_fact` – Core fact table with card metadata
-- `dim_rarity` – Card rarity (common, rare, etc.)
-- `dim_set` – Set metadata (set name, type)
-- `dim_type` – Supertypes, types, and subtypes (e.g., "Creature – Elf")
-- `dim_color` – Color identity and color types
-- `dim_legalities` – Format legality by game mode
-- `dim_keywords` – Exploded list of card mechanics (e.g., "Flying")
-
+_Last updated: 2025-07-03_
