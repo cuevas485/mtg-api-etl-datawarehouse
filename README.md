@@ -1,4 +1,4 @@
-# 🧙‍♂️ Magic: The Gathering Star Schema Warehouse (via Scryfall API)
+# Magic: The Gathering Star Schema Warehouse (via Scryfall API)
 
 This project extracts Magic: The Gathering card data from the [Scryfall API](https://scryfall.com/docs/api), transforms it using a star schema design, and loads it into [Google BigQuery](https://cloud.google.com/bigquery) for analysis. It supports snapshotting price history, tracking card metadata, and enabling rich analytics via SQL or visualization tools.
 
