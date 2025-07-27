@@ -109,16 +109,15 @@ Run the script or notebook to:
 - Explore price trends of specific cards
 - Compare rarity distributions across sets
 - Track availability of cards across legal formats
-- Enable dashboards in Looker, Power BI, or Tableau
+- Enable dashboards in Looker Studio
 
 ---
 
 ## Future Enhancements
 
-- Automate daily runs with Airflow or dbt
+- Automate daily runs with Airflow or Docker
 - Create views for latest prices per card
-- Create summary table for visual tool ingestion (Looker)
 
 ---
 
-_Last updated: 2025-07-24_
+_Last updated: 2025-07-26_
