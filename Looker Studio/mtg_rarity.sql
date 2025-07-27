@@ -27,7 +27,6 @@ card_dim_metrics_v as (
   join `mtg_dataset.dim_rarity` dr on ucs.rarity_id = dr.rarity_id
   left outer join `mtg_dataset.dim_image` di on ucs.card_id = di.id
   join `mtg_dataset.dim_legalities` dl on ucs.card_id = dl.id
-  group by 1,2,3,4,5,6,7,8,9
 )
   select
      set_name
